@@ -34,10 +34,12 @@
 
   <section class="w3-container" id="input"> 
     <h2>Output</h2>
-    {{#each input}}
-      <p>{{@key}}: {{this}}</p>
-    {{/each}}
+    <p>{{list}}</p>
+
     <h2>Birthday Song</h2>
+    {{#each song}}
+      <p>{{this}}</p>
+    {{/each}}
   </section>
 
   <footer class="w3-container ">

@@ -28,7 +28,50 @@ app.get("/", (req, res) => {
 app.get("/happy", (req, res) => {
   const input = req.query;
   console.log(input);
-  res.render("happy", {input});
+  let name = input.name;
+  let gender = input.gender;
+  let num = input.number;
+  
+  let guests = [];
+  let here = []; 
+  
+  for (let i = 1; i <= num; i++) {
+    let guestName = input[`name${i}`];
+    guests.push(guestName);
+    if (input[`checkbox${i}`] === "on") {
+      here.push(guestName);
+    }
+  }
+  
+  let list = `Celebrant: ${name}\nGender: ${gender}<br>Invited Guests:<br>`;
+  guests.forEach((guest) => {
+    list += `${guest}: ${here.includes(guest) ? "Attended" : "Did Not Attend"}<br>`;
+  });
+
+  const happyBirthday = `Happy birthday to you. Happy birthday to you. 
+  Happy birthday dear ${name}. Happy birthday to you!`.split(' ');
+
+  const pronoun = gender === "male" ? "he's" : "she's";
+  const goodFellowSong = `For ${pronoun} a jolly good fellow. For ${pronoun} a jolly good fellow. 
+  For ${pronoun} a jolly good fellow, which nobody can deny!`;
+
+  let song = [];
+
+  if (here.length > 0) {
+    const totalWords = Math.ceil(here.length / happyBirthday.length) * happyBirthday.length;
+    for (let i = 0; i < totalWords; i++) {
+      song.push(`${here[i % here.length]}: ${happyBirthday[i % happyBirthday.length]}`);
+    } 
+    let lastSingerIndex = (totalWords - 1) % here.length;
+    let nextSingerIndex = (lastSingerIndex + 1) % here.length;
+    song.push(`${here[nextSingerIndex]}: ${goodFellowSong}`);
+  } else {
+    // Makes it so that if no guests attended, then everyone sings together
+    song.push(`Everyone: ${happyBirthday.join(' ')}`);
+    song.push(`Everyone: ${goodFellowSong}`);
+  }
+
+  res.render("happy", { list, song });
 });
 
 //Makes the app listen to port 3000
